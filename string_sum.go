@@ -2,6 +2,9 @@ package string_sum
 
 import (
 	"errors"
+	"fmt"
+	"strconv"
+	"strings"
 )
 
 //use these errors as appropriate, wrapping them with fmt.Errorf function
@@ -23,5 +26,67 @@ var (
 // Use the errors defined above as described, again wrapping into fmt.Errorf
 
 func StringSum(input string) (output string, err error) {
-	return "", nil
+	if isEmpty(input) {
+		return "", errorEmptyInput
+	}
+
+	a, b, err := getOperands(input)
+	if err != nil {
+		return "", fmt.Errorf("error while getting operands: %w", err)
+	}
+
+	return string(a + b), nil
+}
+
+func isEmpty(str string) bool {
+	if len(str) == 0 {
+		return true
+	}
+
+	cnt := 0
+	cnt += strings.Count(str, " ")
+	cnt += strings.Count(str, "\t")
+	cnt += strings.Count(str, "\n")
+	if cnt == len(str) {
+		return true
+	}
+
+	return false
+}
+
+func getOperands(str string) (a, b int, err error) {
+	s := strings.Split(str, "+")
+	if len(s) != 2 {
+		return a, b, errorNotTwoOperands
+	}
+	op1 := s[0]
+	op2 := s[1]
+
+	sign := 1
+	if len(op1) > 1 && op1[0] == '-' {
+		sign *= -1
+		op1 = op1[1:]
+	}
+	a, err = strconv.Atoi(op1)
+	if err != nil {
+		return 0, 0, fmt.Errorf("error while converting the first operand to int: %w", err)
+	}
+	if sign == -1 {
+		a = -a
+	}
+
+	sign = 1
+	if len(op2) > 1 && op2[0] == '-' {
+		sign = -sign
+		op2 = op2[1:]
+	}
+	b, err = strconv.Atoi(op2)
+	if err != nil {
+		return 0, 0, fmt.Errorf("error while converting the second operand to int: %w", err)
+	}
+	if sign == -1 {
+		b = -b
+	}
+
+	return
 }
