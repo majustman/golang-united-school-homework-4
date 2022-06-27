@@ -35,7 +35,7 @@ func StringSum(input string) (output string, err error) {
 		return "", fmt.Errorf("error while getting operands: %w", err)
 	}
 
-	return string(a + b), nil
+	return strconv.Itoa(a + b), nil
 }
 
 func isEmpty(str string) bool {
