@@ -26,21 +26,22 @@ var (
 // Use the errors defined above as described, again wrapping into fmt.Errorf
 
 func StringSum(input string) (output string, err error) {
-	if isEmpty(input) {
-		return "", errorEmptyInput
+	err = isEmpty(input)
+	if err != nil {
+		return "", fmt.Errorf("error whil calculating the sum: %w", err)
 	}
 
 	a, b, err := getOperands(input)
 	if err != nil {
-		return "", fmt.Errorf("error while getting operands: %w", err)
+		return "", fmt.Errorf("error whil calculating the sum: %w", err)
 	}
 
 	return strconv.Itoa(a + b), nil
 }
 
-func isEmpty(str string) bool {
+func isEmpty(str string) error {
 	if len(str) == 0 {
-		return true
+		return errorEmptyInput
 	}
 
 	cnt := 0
@@ -48,10 +49,10 @@ func isEmpty(str string) bool {
 	cnt += strings.Count(str, "\t")
 	cnt += strings.Count(str, "\n")
 	if cnt == len(str) {
-		return true
+		return errorEmptyInput
 	}
 
-	return false
+	return nil
 }
 
 func getOperands(str string) (a, b int, err error) {
@@ -59,34 +60,36 @@ func getOperands(str string) (a, b int, err error) {
 	if len(s) != 2 {
 		return a, b, errorNotTwoOperands
 	}
-	op1 := s[0]
-	op2 := s[1]
 
-	sign := 1
-	if len(op1) > 1 && op1[0] == '-' {
-		sign *= -1
-		op1 = op1[1:]
-	}
-	a, err = strconv.Atoi(op1)
+	a, err = convertToString(s[0])
 	if err != nil {
-		return 0, 0, fmt.Errorf("error while converting the first operand to int: %w", err)
-	}
-	if sign == -1 {
-		a = -a
+		return 0, 0, fmt.Errorf("error while getting operands: %w", err)
 	}
 
-	sign = 1
-	if len(op2) > 1 && op2[0] == '-' {
-		sign = -sign
-		op2 = op2[1:]
-	}
-	b, err = strconv.Atoi(op2)
+	b, err = convertToString(s[1])
 	if err != nil {
-		return 0, 0, fmt.Errorf("error while converting the second operand to int: %w", err)
-	}
-	if sign == -1 {
-		b = -b
+		return 0, 0, fmt.Errorf("error while getting operands: %w", err)
 	}
 
 	return
+}
+
+func convertToString(str string) (int, error) {
+	sign := 1
+	if len(str) > 1 && str[0] == '-' {
+		sign *= -1
+		str = str[1:]
+	}
+	n, err := strconv.Atoi(str)
+	if err != nil {
+		return 0, fmt.Errorf("error while converting operand to int: %w", err)
+	}
+	if sign == -1 {
+		n = -n
+	}
+	return n, nil
+}
+
+func deleteWhiteSpaces(str string) string {
+	return ""
 }
