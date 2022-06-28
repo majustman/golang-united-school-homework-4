@@ -106,7 +106,7 @@ func convertToString(str string) (int, error) {
 	str = strings.TrimSpace(str)
 	n, err := strconv.Atoi(str)
 	if err != nil {
-		return 0, fmt.Errorf("error while converting operand to int: %w", err)
+		return 0, fmt.Errorf("error while converting operand to int: %w", err.(*strconv.NumError))
 	}
 	if sign == -1 {
 		n = -n
