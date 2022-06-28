@@ -28,12 +28,12 @@ var (
 func StringSum(input string) (output string, err error) {
 	err = isEmpty(input)
 	if err != nil {
-		return "", fmt.Errorf("error whil calculating the sum: %w", err)
+		return "", fmt.Errorf("error while calculating the sum: %w", err)
 	}
 
 	a, b, err := getOperands(input)
 	if err != nil {
-		return "", fmt.Errorf("error whil calculating the sum: %w", err)
+		return "", fmt.Errorf("error while calculating the sum: %w", err)
 	}
 
 	return strconv.Itoa(a + b), nil
@@ -56,7 +56,12 @@ func isEmpty(str string) error {
 }
 
 func getOperands(str string) (a, b int, err error) {
-	s := strings.Split(str, "+")
+	var s []string
+	if !strings.Contains(str, "+") {
+		s = splitWithoutPlus(str)
+	} else {
+		s = strings.Split(str, "+")
+	}
 	if len(s) != 2 {
 		return a, b, errorNotTwoOperands
 	}
@@ -72,6 +77,23 @@ func getOperands(str string) (a, b int, err error) {
 	}
 
 	return
+}
+
+func splitWithoutPlus(str string) []string {
+	var res []string
+	if !strings.Contains(str, "-") {
+		return res
+	}
+	var keys []int
+	for i, v := range str {
+		if v == '-' {
+			keys = append(keys, i)
+		}
+	}
+	lastKey := keys[len(keys)-1]
+	res = append(res, str[0:lastKey])
+	res = append(res, str[lastKey:])
+	return res
 }
 
 func convertToString(str string) (int, error) {
