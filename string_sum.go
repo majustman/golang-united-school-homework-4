@@ -75,6 +75,7 @@ func getOperands(str string) (a, b int, err error) {
 }
 
 func convertToString(str string) (int, error) {
+	str = strings.TrimSpace(str)
 	sign := 1
 	if len(str) > 1 && str[0] == '-' {
 		sign *= -1
