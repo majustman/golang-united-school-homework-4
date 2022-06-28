@@ -90,7 +90,3 @@ func convertToString(str string) (int, error) {
 	}
 	return n, nil
 }
-
-func deleteWhiteSpaces(str string) string {
-	return ""
-}
