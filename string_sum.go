@@ -103,6 +103,7 @@ func convertToString(str string) (int, error) {
 		sign *= -1
 		str = str[1:]
 	}
+	str = strings.TrimSpace(str)
 	n, err := strconv.Atoi(str)
 	if err != nil {
 		return 0, fmt.Errorf("error while converting operand to int: %w", err)
